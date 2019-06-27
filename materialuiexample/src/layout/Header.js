@@ -46,3 +46,83 @@ const createGet = (
   return normal;
 };
 
+const Header = ({
+    className,
+    component: Component,
+    classes,
+    menuIcon,
+    style,
+    theme,
+    children,
+    toolbarProps,
+    ...props
+  }) => {
+    const ctx = useContext(LayoutContext);
+    const {
+      clipped,
+      collapsedWidth,
+      navWidth,
+      navVariant,
+      headerPosition,
+      open,
+      setOpen
+    } = ctx;
+    const getWidth = createGet(
+      ctx,
+      "100%",
+      `calc(100% - ${collapsedWidth}px)`,
+      `calc(100% - ${navWidth}px)`,
+      "100%"
+    );
+    const getMargin = createGet(ctx, 0, collapsedWidth, navWidth, navWidth);
+    const shouldRenderMenu = navVariant !== "permanent" && !!menuIcon;
+    return (
+      <AppBar
+        color={"default"}
+        elevation={0}
+        {...props}
+        className={`${className} ${classes.root}`}
+        position={headerPosition}
+        style={{
+          ...style,
+          zIndex: clipped ? theme.zIndex.drawer + 1 : theme.zIndex.appBar,
+          width: getWidth(),
+          marginLeft: getMargin()
+        }}
+      >
+        <Toolbar {...toolbarProps}>
+          {shouldRenderMenu && (
+            <IconButton onClick={setOpen} className={classes.menuButton}>
+              {open ? menuIcon.active : menuIcon.inactive || menuIcon.active}
+            </IconButton>
+          )}
+          {typeof children === "function" ? children(ctx) : children}
+        </Toolbar>
+      </AppBar>
+    );
+  };
+  
+  Header.propTypes = {
+    className: PropTypes.string,
+    classes: PropTypes.shape({}).isRequired,
+    component: PropTypes.elementType,
+    style: PropTypes.shape({}),
+    position: PropTypes.string,
+    theme: PropTypes.shape({}).isRequired,
+    children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]).isRequired,
+    toolbarProps: PropTypes.shape({}),
+    menuIcon: PropTypes.shape({
+      inactive: PropTypes.node.isRequired,
+      active: PropTypes.node
+    })
+  };
+  Header.defaultProps = {
+    className: "",
+    component: "div",
+    style: {},
+    position: "relative",
+    toolbarProps: {},
+    menuIcon: null
+  };
+  
+  export default withTheme(withStyles(styles, { name: "MuiHeader" })(Header));
