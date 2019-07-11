@@ -40,3 +40,35 @@ const list = [
       icon: "delete"
     }
   ];
+
+  const NavContentEx = () => (
+    <List>
+      {list.map(({ primaryText, icon }, i) => (
+        <ListItem selected={i === 0} button>
+          <ListItemIcon>
+            <Icon>{icon}</Icon>
+          </ListItemIcon>
+          <ListItemText
+            primary={primaryText}
+            primaryTypographyProps={{ noWrap: true }}
+          />
+        </ListItem>
+      ))}
+      <Divider style={{ margin: "12px 0" }} />
+      <ListItem button>
+        <ListItemIcon>
+          <Icon>settings</Icon>
+        </ListItemIcon>
+        <ListItemText
+          primary={"Settings & account"}
+          primaryTypographyProps={{ noWrap: true }}
+        />
+      </ListItem>
+    </List>
+  );
+  
+  NavContentEx.propTypes = {};
+  NavContentEx.defaultProps = {};
+  
+  export default NavContentEx;
+  
